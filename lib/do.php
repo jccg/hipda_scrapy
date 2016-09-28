@@ -26,16 +26,8 @@ $dbInfo['charset'] = DB_CHARSET;
 
 
 
-//Define system Path
-$ss_path = __DIR__;
-$ss_path = substr($ss_path,0,strlen($ss_path)-4);
-define('SS_PATH',$ss_path);
-//autoload class
-spl_autoload_register('autoload');
-function autoload($class){
-    require_once SS_PATH.'/lib/'.str_replace('\\','/',$class).'.php';
-}
-require_once 'Ss/Ext/Medoo.php';
+//Define system Pat
+require_once 'medoo.php';
 $db = new medoo([
     // required
     'database_type' => DB_TYPE,
@@ -52,5 +44,3 @@ $db = new medoo([
         PDO::ATTR_CASE => PDO::CASE_NATURAL
     ]
 ]);
-$Runtime= new \Ss\Etc\Runtime();
-$Runtime->Start();
