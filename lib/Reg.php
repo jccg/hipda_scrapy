@@ -4,7 +4,7 @@ class Reg {
 
     private $db;
 
-    private $table = "user";
+    private $table = "tlist";
 
     function __construct(){
         global $db;
@@ -19,24 +19,18 @@ class Reg {
         return $datas['0']['port'];
     }
 
-    function Reg($username,$email,$pass,$plan,$transfer,$invite_num,$ref_by){
-
+    function Reg($tid ,$head,$uid ,$uname  ,$repcnt ,$readcnt,$ctime  ,$rtime){
+        echo "aaaaaaaa";
         $this->db->insert($this->table,[
-           "user_name" => $username,
-            "email" => $email,
-            "pass" => $pass,
-            "passwd" =>  'sssssssa',
-            "t" => '0',
-            "u" => '0',
-            "d" => '0',
-            "plan" => $plan,
-            "transfer_enable" => $transfer,
-            "port" => $this->GetLastPort()+rand(1,5),
-            "invite_num" => $invite_num,
-            "money" => '0',
-            "#reg_date" =>  'NOW()',
-            "ref_by" => $ref_by,
-            "expire_time" => time()
+           "tid" => $tid,
+            "head" => $head,
+            "uid" => $uid,
+            "uname" =>  $uname,
+            "repcnt" => $repcnt,
+            "readcnt" => $readcnt,
+            "ctime" => $ctime,
+            "rtime" => $rtime,
+            "sptime" => time()
         ]);
     }
 
