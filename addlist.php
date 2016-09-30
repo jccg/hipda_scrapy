@@ -4,6 +4,9 @@ require_once './lib/config.php';
 $num  = $_POST['code_num'];
 $uid  = $_POST['uid'];
 
+$c = new \Reg();
+
+
 if( $num == null || strlen($num) >33 || strlen($num) <10  ){
     echo ' <script>alert("充值码错误!")</script> ';
     exit();

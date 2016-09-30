@@ -24,7 +24,15 @@ $dbInfo['username'] = DB_USER;
 $dbInfo['password'] = DB_PWD;
 $dbInfo['charset'] = DB_CHARSET;
 
-
+//Define system Path
+$ss_path = __DIR__;
+$ss_path = substr($ss_path,0,strlen($ss_path)-4);
+define('SS_PATH',$ss_path);
+//autoload class
+spl_autoload_register('autoload');
+function autoload($class){
+    require_once SS_PATH.'/lib/'.str_replace('\\','/',$class).'.php';
+}
 
 //Define system Pat
 require_once 'medoo.php';
