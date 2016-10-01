@@ -25,8 +25,8 @@ xsrf = tree.xpath('//input[@name="formhash"]/@value')[0]
 payload = {                  'formhash': xsrf,
                             'referer' : 'http://www.hi-pda.com/forum/logging.php?action=login',
                             'loginfield' : 'username',
-                            'username': 'logic90',
-                            'password': 'xxxxxxxxxxxxxxxxxxxxxxx',
+                            'username': 'xxxxxx',
+                            'password': 'xxxxxx',
                             'questionid' : '0',
                             'answer' : '',
                             'loginsubmit' : 'true',
@@ -61,39 +61,59 @@ with open('testt4.html', 'wb') as f:
 tree = html.fromstring(r.text)
 t11 = tree.xpath('//*[@id="moderate"]/table/tbody/@id')
 
-with open('result.txt', 'ab') as f:
-    #f.write(r.text.encode('utf-8')) #
-    for index, all_tid in enumerate(t11):
-        print index, all_tid
-        #todo 0 is temp
-        s = all_tid
-        tids = s.split('_')
-        #tid
-        #print(tids[1])
-        f.write(tids[1].encode('utf-8')) #
-        t22 = tree.xpath('//*[@id="thread_'+tids[1]+'"]/a')
-        #thead
-        #print t22[0].text
-        f.write(t22[0].text.encode('utf-8')) #
-        #name
-        t33 = tree.xpath('//*[@id="'+all_tid+'"]/tr/td[3]/cite/a')
-        #print t33[0].text
-        f.write(t33[0].text.encode('utf-8')) #
-        #ctime
-        t44 = tree.xpath('//*[@id="'+all_tid+'"]/tr/td[3]/em')
-        #print t44[0].text
-        f.write(t44[0].text.encode('utf-8')) #
-        #rep
-        t55 = tree.xpath('//*[@id="'+all_tid+'"]/tr/td[4]/strong')
-        #print t55[0].text
-        f.write(t55[0].text.encode('utf-8')) #
-        #read
-        t66 = tree.xpath('//*[@id="'+all_tid+'"]/tr/td[4]/em')
-        #print t66[0].text
-        f.write(t66[0].text.encode('utf-8')) #
-        #last time
-        t77 = tree.xpath('//*[@id="'+all_tid+'"]/tr/td[5]/em/a')
-        #print t77[0].text
-        f.write(t77[0].text.encode('utf-8')) #
+up_url = "http://fvgt.online/spup/addlist.php"
 
+#f.write(r.text.encode('utf-8')) #
+for index, all_tid in enumerate(t11):
+    print index, all_tid
+    #todo 0 is temp
+    s = all_tid
+    tids = s.split('_')
+    #tid
+    #print(tids[1])
+    up_tid = tids[1].encode('utf-8')
+    t22 = tree.xpath('//*[@id="thread_'+tids[1]+'"]/a')
+    
+    #thead
+    print t22[0].text
+    up_head = t22[0].text.encode('utf-8')
+    
+    #name
+    t33 = tree.xpath('//*[@id="'+all_tid+'"]/tr/td[3]/cite/a')
+    #print t33[0].text
+    up_uname = t33[0].text.encode('utf-8')
+    
+    #ctime
+    t44 = tree.xpath('//*[@id="'+all_tid+'"]/tr/td[3]/em')
+    #print t44[0].text
+    up_ctime = t44[0].text.encode('utf-8')
+    
+    #rep
+    t55 = tree.xpath('//*[@id="'+all_tid+'"]/tr/td[4]/strong')
+    #print t55[0].text
+    up_repcnt = t55[0].text.encode('utf-8')
+    
+    #read
+    t66 = tree.xpath('//*[@id="'+all_tid+'"]/tr/td[4]/em')
+    #print t66[0].text
+    up_readcnt = t66[0].text.encode('utf-8')
+    
+    #last time
+    t77 = tree.xpath('//*[@id="'+all_tid+'"]/tr/td[5]/em/a')
+    #print t77[0].text
+    up_rtime = t77[0].text.encode('utf-8')
+
+    
+    payload = {
+                'tid':up_tid,
+                'head':up_head,
+                'uid':'12345',
+                'uname':up_uname,
+                'repcnt': up_repcnt,
+                'readcnt':up_readcnt,
+                'ctime':up_ctime,
+                'rtime' :up_rtime
+                }
+
+    r = requests.post(up_url, data=payload)
 

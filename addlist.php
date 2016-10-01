@@ -3,7 +3,7 @@
 require_once './lib/config.php';
 $tid  = $_POST['tid'];
 $head  = $_POST['head'];
-$uid  = $_POST['tid'];
+$uid  = $_POST['uid'];
 $uname  = $_POST['uname'];
 $repcnt  = $_POST['repcnt'];
 $readcnt  = $_POST['readcnt'];
