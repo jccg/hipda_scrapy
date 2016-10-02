@@ -19,9 +19,18 @@ class Reg {
         return $datas['0']['port'];
     }
 
+    //根据用户名返回UID
+    function get_info_by_tid($tid){
+     $datas = $this->db->select($this->table,"*", [
+             "tid" => $tid
+     ]);
+     return $datas[0];
+    }
+    
     function Reg($tid ,$head,$uid ,$uname  ,$repcnt ,$readcnt,$ctime  ,$rtime){
         echo "aaaaaaaa";
-        $this->db->insert($this->table,[
+        #    insert
+        $this->db->rinsert($this->table,[
            "tid" => $tid,
             "head" => $head,
             "uid" => $uid,
