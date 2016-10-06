@@ -28,7 +28,6 @@ class Reg {
     }
     
     function Reg($tid ,$head,$uid ,$uname  ,$repcnt ,$readcnt,$ctime  ,$rtime, $page){
-        echo "aaaaaaaa";
         #    insert
         $this->db->rinsert($this->table,[
            "tid" => $tid,
@@ -42,6 +41,15 @@ class Reg {
             "sptime" => time(),
             "page" => $page
         ]);
+    }
+    
+       
+    function uppage($page){
+        #    insert
+        $this->db->update("nowproc",[
+           "procvalue" => $page
+        ],
+        ["prockey"=> "page"]);
     }
 
 }
