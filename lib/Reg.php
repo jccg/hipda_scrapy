@@ -27,7 +27,7 @@ class Reg {
      return $datas[0];
     }
     
-    function Reg($tid ,$head,$uid ,$uname  ,$repcnt ,$readcnt,$ctime  ,$rtime){
+    function Reg($tid ,$head,$uid ,$uname  ,$repcnt ,$readcnt,$ctime  ,$rtime, $page){
         echo "aaaaaaaa";
         #    insert
         $this->db->rinsert($this->table,[
@@ -39,7 +39,8 @@ class Reg {
             "readcnt" => $readcnt,
             "ctime" => $ctime,
             "rtime" => $rtime,
-            "sptime" => time()
+            "sptime" => time(),
+            "page" => $page
         ]);
     }
 

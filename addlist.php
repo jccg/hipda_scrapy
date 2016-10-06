@@ -9,13 +9,14 @@ $repcnt  = $_POST['repcnt'];
 $readcnt  = $_POST['readcnt'];
 $ctime  = $_POST['ctime'];
 $rtime  = $_POST['rtime'];
+$page = $_POST['page'];
 
 
 
 
 $c = new \Reg();
 
-$c->Reg($tid ,$head,$uid ,$uname  ,$repcnt ,$readcnt,$ctime  ,$rtime);
+$c->Reg($tid ,$head,$uid ,$uname  ,$repcnt ,$readcnt,$ctime  ,$rtime, $page);
 
 #if( $num == null || strlen($num) >33 || strlen($num) <10  ){
 #    echo ' <script>alert("充值码错误!")</script> ';

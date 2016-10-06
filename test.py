@@ -1,8 +1,14 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
+import os,sys
 import requests
 import time
 from lxml import html
+
+if (len(sys.argv)>1):
+    page = sys.argv[1]
+else:
+    page = '1'
 
 s = requests.Session()
 
@@ -25,8 +31,8 @@ xsrf = tree.xpath('//input[@name="formhash"]/@value')[0]
 payload = {                  'formhash': xsrf,
                             'referer' : 'http://www.hi-pda.com/forum/logging.php?action=login',
                             'loginfield' : 'username',
-                            'username': 'xxxxxx',
-                            'password': 'xxxxxx',
+                            'username': 'xxxxxxx',
+                            'password': 'xxxxxxx',
                             'questionid' : '0',
                             'answer' : '',
                             'loginsubmit' : 'true',
@@ -51,7 +57,7 @@ r.encoding = r.apparent_encoding
 with open('testt3.html', 'wb') as f:
     f.write(r.text.encode('utf-8')) 
     
-d_url = 'http://www.hi-pda.com/forum/forumdisplay.php?fid=2'
+d_url = 'http://www.hi-pda.com/forum/forumdisplay.php?fid=2&page=' + page
 r = s.get(d_url, headers=headers)
 r.encoding = r.apparent_encoding
 with open('testt4.html', 'wb') as f:
@@ -112,7 +118,9 @@ for index, all_tid in enumerate(t11):
                 'repcnt': up_repcnt,
                 'readcnt':up_readcnt,
                 'ctime':up_ctime,
-                'rtime' :up_rtime
+                'rtime' :up_rtime,
+                'page':page
+                
                 }
 
     r = requests.post(up_url, data=payload)
