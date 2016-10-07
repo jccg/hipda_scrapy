@@ -31,8 +31,8 @@ xsrf = tree.xpath('//input[@name="formhash"]/@value')[0]
 payload = {                  'formhash': xsrf,
                             'referer' : 'http://www.hi-pda.com/forum/logging.php?action=login',
                             'loginfield' : 'username',
-                            'username': 'xxxxx',
-                            'password': 'xxxxxxx',
+                            'username': 'xxxxxx',
+                            'password': 'xxxxxx',
                             'questionid' : '0',
                             'answer' : '',
                             'loginsubmit' : 'true',
@@ -64,6 +64,15 @@ for i in range(initpage, initpage+100):
     print "page..............:"+page
     page = str(i)
 
+    
+    
+    payload = {
+                'page':page
+                
+                }
+
+    r = requests.post("http://fvgt.online/spup/page.php", data=payload)
+    
     d_url = 'http://www.hi-pda.com/forum/forumdisplay.php?fid=2&page=' + page
     r = s.get(d_url, headers=headers)
     r.encoding = r.apparent_encoding

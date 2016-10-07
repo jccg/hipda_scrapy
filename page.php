@@ -4,9 +4,6 @@ require_once './lib/config.php';
 //$tid  = $_POST['tid'];
 $page = $_POST['page'];
 
-
-
-
 $c = new \Reg();
 
 $c->uppage($page);
