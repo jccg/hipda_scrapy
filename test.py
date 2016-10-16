@@ -3,11 +3,25 @@
 import os,sys
 import requests
 import time
+import types 
 from lxml import html
 
+def logLine(line):
+    timeinfo = time.strftime('%Y-%m-%d %H:%M:%S -> ',time.localtime(time.time()))
+    with open('logfile.txt', 'w+') as f:
+        f.write(timeinfo + line)     
+
+def getProxy():
+    #proxies = json.loads(requests.get('http://localhost:8000/').content)
+    logLine('test')
+    proxies = ['125.112.20.95:3128']
+    proxy = proxies[0]
+    r = requests.get('http://www.qq.com/robots.txt',proxies={'http':'http://%s' % proxy}, timeout=5)
+    r.encoding = r.apparent_encoding
+    print r.text
 
 
-def dosp(page):
+def initLogin():
     s = requests.Session()
 
     url = 'http://www.hi-pda.com/forum/logging.php?action=login'
@@ -15,7 +29,7 @@ def dosp(page):
 
 
 
-    r = s.get(url, headers=headers)
+    r = s.get(url, headers=headers, timeout=5)
     r.encoding = r.apparent_encoding
     print r.apparent_encoding
     with open('testt.html', 'wb') as f:
@@ -28,8 +42,8 @@ def dosp(page):
     payload = {                  'formhash': xsrf,
                                 'referer' : 'http://www.hi-pda.com/forum/logging.php?action=login',
                                 'loginfield' : 'username',
-                                'username': 'xxxxx',
-                                'password': 'xxxxxxx',
+                                'username': 'xxxxxx',
+                                'password': 'xxxxxx',
                                 'questionid' : '0',
                                 'answer' : '',
                                 'loginsubmit' : 'true',
@@ -39,7 +53,7 @@ def dosp(page):
     print(xsrf)
 
     post_url = 'http://www.hi-pda.com/forum/logging.php?action=login&loginsubmit=yes&inajax=1'
-    r = s.post(post_url, data=payload, headers=headers)
+    r = s.post(post_url, data=payload, headers=headers, timeout=5)
     with open('testt1.html', 'wb') as f:
         f.write(r.text.encode('utf-8'))         
 
@@ -49,29 +63,33 @@ def dosp(page):
     }
 
     index_url = 'http://www.hi-pda.com/forum/index.php'
-    r = s.get(index_url, headers=headers)
+    r = s.get(index_url, headers=headers, timeout=5)
     r.encoding = r.apparent_encoding
     with open('testt3.html', 'wb') as f:
         f.write(r.text.encode('utf-8')) 
 
+    return s
+    
+
+def dosp(s, page):
+
     initpage = int(page)
 
 
-    for i in range(initpage, initpage+1000):
+    for i in range(initpage, initpage+10000):
         page = str(i)
         print "page..............:"+page
-        #time.sleep(1)
         
         
         payload = {
+                    'spid':'page2',
                     'page':page
-                    
                     }
 
-        r = requests.post("http://fvgt.online/spup/page.php", data=payload)
+        r = requests.post("http://fvgt.online/spup/page.php", data=payload, timeout=5)
         
         d_url = 'http://www.hi-pda.com/forum/forumdisplay.php?fid=2&page=' + page
-        r = s.get(d_url, headers=headers)
+        r = s.get(d_url, headers=headers, timeout=60)
         r.encoding = r.apparent_encoding
         with open('testt4.html', 'wb') as f:
             f.write(r.text.encode('utf-8')) #
@@ -94,6 +112,9 @@ def dosp(page):
             
             #thead
             #print t22[0].text
+            #title is null
+            if (type(t22[0].text) is types.NoneType):
+                continue
             up_head = t22[0].text.encode('utf-8')
             
             #name
@@ -135,7 +156,7 @@ def dosp(page):
                         
                         }
 
-            r = requests.post(up_url, data=payload)
+            r = requests.post(up_url, data=payload, timeout=5)
 
 
 def createDaemon(page):
@@ -174,5 +195,8 @@ if __name__ == '__main__':
         page = sys.argv[1]
     else:
         page = '1'
-    createDaemon(page)
+    getProxy()
+    #s = initLogin()
+    #dosp(s, page)
+    #createDaemon(page)
 
