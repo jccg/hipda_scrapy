@@ -44,12 +44,12 @@ class Reg {
     }
     
        
-    function uppage($page){
+    function uppage($spid, $page){
         #    insert
         $this->db->update("nowproc",[
            "procvalue" => $page
         ],
-        ["prockey"=> "page"]);
+        ["prockey"=> $spid]);
     }
 
 }
