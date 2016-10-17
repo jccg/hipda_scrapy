@@ -12,6 +12,34 @@ def logLine(line):
         f.write(timeinfo + line)     
 
 def getProxy():
+    r = requests.get('http://api.xicidaili.com/free2016.txt', timeout=5)
+    r.encoding = r.apparent_encoding
+    print r.text
+    
+    ipStr = r.text
+    ipList = ipStr.split('\r\n')
+    print ipList
+    okList = []
+
+    for proxy in ipList:
+        try:
+            r = requests.get('http://www.qq.com/robots.txt',proxies={'http':'http://%s' % proxy}, timeout=5)
+            r.encoding = r.apparent_encoding
+            print r.text 
+            if r.text.find('User-agent') == 0:
+                print "["+proxy+"]"
+                okList.append(proxy)
+            
+        except requests.exceptions.Timeout:
+            print('timeout......')
+            pass
+        except requests.exceptions.ProxyError:
+            print('ProxyError......')
+            pass
+        except requests.exceptions.ConnectionError:
+            print('ConnectionError......')
+            pass
+        
     #proxies = json.loads(requests.get('http://localhost:8000/').content)
     logLine('test')
     proxies = ['125.112.20.95:3128']
