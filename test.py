@@ -3,6 +3,7 @@
 import os,sys
 import requests
 import time
+import os
 import types 
 from lxml import html
 
@@ -12,39 +13,18 @@ def logLine(line):
         f.write(timeinfo + line)     
 
 #os.system('sed -i 1001d %s' % filename)  删除一行
+
+def get_ipfile():
+    line = ''
+    with open('iplist.txt', 'r') as f:
+        line = f.readline()
+        line = line.replace('\n','')
+        if not line:
+            return -1
+    os.system('sed -i 1d iplist.txt')
+    return line
         
-def getProxy():
-    r = requests.get('http://api.xicidaili.com/free2016.txt', timeout=5)
-    r.encoding = r.apparent_encoding
-    
-    ipStr = r.text
-    ipList = ipStr.split('\r\n')
-    print ipList
-    okList = []
-
-    for proxy in ipList:
-        try:
-            r = requests.get('http://www.qq.com/robots.txt',proxies={'http':'http://%s' % proxy}, timeout=5)
-            r.encoding = r.apparent_encoding
-            print r.text 
-            if r.text.find('User-agent') == 0:
-                print "["+proxy+"]"
-                with open('iplist.txt', 'a') as f:
-                    f.write(proxy + '\n')
-                    okList.append(proxy)
-            
-        except requests.exceptions.Timeout:
-            print('timeout......')
-            pass
-        except requests.exceptions.ProxyError:
-            print('ProxyError......')
-            pass
-        except requests.exceptions.ConnectionError:
-            print('ConnectionError......')
-            pass
-
-
-def initLogin():
+def initLogin(proxy):
     s = requests.Session()
 
     url = 'http://www.hi-pda.com/forum/logging.php?action=login'
@@ -52,7 +32,7 @@ def initLogin():
 
 
 
-    r = s.get(url, headers=headers, timeout=5)
+    r = s.get(url, headers=headers, timeout=10, proxies={'http':'http://%s' % proxy})
     r.encoding = r.apparent_encoding
     print r.apparent_encoding
     with open('testt.html', 'wb') as f:
@@ -76,7 +56,7 @@ def initLogin():
     print(xsrf)
 
     post_url = 'http://www.hi-pda.com/forum/logging.php?action=login&loginsubmit=yes&inajax=1'
-    r = s.post(post_url, data=payload, headers=headers, timeout=5)
+    r = s.post(post_url, data=payload, headers=headers, timeout=10, proxies={'http':'http://%s' % proxy})
     with open('testt1.html', 'wb') as f:
         f.write(r.text.encode('utf-8'))         
 
@@ -86,7 +66,7 @@ def initLogin():
     }
 
     index_url = 'http://www.hi-pda.com/forum/index.php'
-    r = s.get(index_url, headers=headers, timeout=5)
+    r = s.get(index_url, headers=headers, timeout=10, proxies={'http':'http://%s' % proxy})
     r.encoding = r.apparent_encoding
     with open('testt3.html', 'wb') as f:
         f.write(r.text.encode('utf-8')) 
@@ -218,7 +198,15 @@ if __name__ == '__main__':
         page = sys.argv[1]
     else:
         page = '1'
-    getProxy()
+    #getProxy()
+    
+    
+    ip = get_ipfile()
+    
+    if (ip != -1):
+        print ip
+    initLogin(ip)
+    
     #s = initLogin()
     #dosp(s, page)
     #createDaemon(page)
