@@ -11,10 +11,11 @@ def logLine(line):
     with open('logfile.txt', 'w+') as f:
         f.write(timeinfo + line)     
 
+#os.system('sed -i 1001d %s' % filename)  删除一行
+        
 def getProxy():
     r = requests.get('http://api.xicidaili.com/free2016.txt', timeout=5)
     r.encoding = r.apparent_encoding
-    print r.text
     
     ipStr = r.text
     ipList = ipStr.split('\r\n')
@@ -28,7 +29,9 @@ def getProxy():
             print r.text 
             if r.text.find('User-agent') == 0:
                 print "["+proxy+"]"
-                okList.append(proxy)
+                with open('iplist.txt', 'a') as f:
+                    f.write(proxy + '\n')
+                    okList.append(proxy)
             
         except requests.exceptions.Timeout:
             print('timeout......')
@@ -39,14 +42,6 @@ def getProxy():
         except requests.exceptions.ConnectionError:
             print('ConnectionError......')
             pass
-        
-    #proxies = json.loads(requests.get('http://localhost:8000/').content)
-    logLine('test')
-    proxies = ['125.112.20.95:3128']
-    proxy = proxies[0]
-    r = requests.get('http://www.qq.com/robots.txt',proxies={'http':'http://%s' % proxy}, timeout=5)
-    r.encoding = r.apparent_encoding
-    print r.text
 
 
 def initLogin():
