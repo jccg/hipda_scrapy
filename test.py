@@ -6,6 +6,9 @@ import time
 import os
 import types 
 from lxml import html
+from cookielib import LWPCookieJar
+
+COOKIE_FILE = './cookie_file'
 
 def logLine(line):
     timeinfo = time.strftime('%Y-%m-%d %H:%M:%S -> ',time.localtime(time.time()))
@@ -25,79 +28,77 @@ def get_ipfile():
     return line
         
 def initLogin(proxy):
+    global COOKIE_FILE
     s = requests.Session()
+    s.cookies = LWPCookieJar(COOKIE_FILE)
 
+    if not os.path.exists(COOKIE_FILE):
+        # 登录并保存 cookie 到文件
+        pass
+    else:
+        # "从 cookie 文件加载上次的 cookie，这样就不需要重复登陆"
+        s.cookies.load()
+        return s
+    
     url = 'http://www.hi-pda.com/forum/logging.php?action=login'
     headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36','Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8','Accept-Encoding':'gzip, deflate, sdch','Accept-Language':'zh-CN,zh;q=0.8','Connection':'keep-alive','Host':'www.hi-pda.com','Upgrade-Insecure-Requests':'1'}
 
 
-
-    r = s.get(url, headers=headers, timeout=10, proxies={'http':'http://%s' % proxy})
-    r.encoding = r.apparent_encoding
-    print r.apparent_encoding
-    with open('testt.html', 'wb') as f:
-        f.write(r.text.encode('utf-8')) 
-
-
-    tree = html.fromstring(r.text)
-    xsrf = tree.xpath('//input[@name="formhash"]/@value')[0]
-
-    payload = {                  'formhash': xsrf,
-                                'referer' : 'http://www.hi-pda.com/forum/logging.php?action=login',
-                                'loginfield' : 'username',
-                                'username': 'xxxxxx',
-                                'password': 'xxxxxx',
-                                'questionid' : '0',
-                                'answer' : '',
-                                'loginsubmit' : 'true',
-                                'cookietime' : '2592000'
-                                }
-
-    print(xsrf)
-
-    post_url = 'http://www.hi-pda.com/forum/logging.php?action=login&loginsubmit=yes&inajax=1'
-    r = s.post(post_url, data=payload, headers=headers, timeout=10, proxies={'http':'http://%s' % proxy})
-    with open('testt1.html', 'wb') as f:
-        f.write(r.text.encode('utf-8'))         
-
-    #time.sleep(1)
-
-    headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36','Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8','Accept-Encoding':'gzip, deflate, sdch','Accept-Language':'zh-CN,zh;q=0.8','Connection':'keep-alive','Host':'www.hi-pda.com','Upgrade-Insecure-Requests':'1','Referer':'http://www.hi-pda.com/forum/logging.php?action=login'
-    }
-
-    index_url = 'http://www.hi-pda.com/forum/index.php'
-    r = s.get(index_url, headers=headers, timeout=10, proxies={'http':'http://%s' % proxy})
-    r.encoding = r.apparent_encoding
-    with open('testt3.html', 'wb') as f:
-        f.write(r.text.encode('utf-8')) 
-
-    return s
-    
-
-def dosp(s, page):
-
-    initpage = int(page)
-
-
-    for i in range(initpage, initpage+10000):
-        page = str(i)
-        print "page..............:"+page
-        
-        
-        payload = {
-                    'spid':'page2',
-                    'page':page
-                    }
-
-        r = requests.post("http://fvgt.online/spup/page.php", data=payload, timeout=5)
-        
-        d_url = 'http://www.hi-pda.com/forum/forumdisplay.php?fid=2&page=' + page
-        r = s.get(d_url, headers=headers, timeout=60)
+    try:
+        r = s.get(url, headers=headers, timeout=8, proxies={'http':'http://%s' % proxy})
         r.encoding = r.apparent_encoding
-        with open('testt4.html', 'wb') as f:
-            f.write(r.text.encode('utf-8')) #
-                
+        print r.apparent_encoding
+        with open('testt.html', 'wb') as f:
+            f.write(r.text.encode('utf-8')) 
 
+
+        tree = html.fromstring(r.text)
+        xsrf = tree.xpath('//input[@name="formhash"]/@value')
+        if len(xsrf) < 1:
+            print '403 .....'
+            return -4
+
+        payload = {                  'formhash': xsrf[0],
+                                    'referer' : 'http://www.hi-pda.com/forum/logging.php?action=login',
+                                    'loginfield' : 'username',
+                                    'username': '',
+                                    'password': 'kkkkkk',
+                                    'questionid' : '0',
+                                    'answer' : '',
+                                    'loginsubmit' : 'true',
+                                    'cookietime' : '2592000'
+                                    }
+
+        print(xsrf)
+
+        post_url = 'http://www.hi-pda.com/forum/logging.php?action=login&loginsubmit=yes&inajax=1'
+        r = s.post(post_url, data=payload, headers=headers, timeout=10, proxies={'http':'http://%s' % proxy})
+        with open('testt1.html', 'wb') as f:
+            f.write(r.text.encode('utf-8'))         
+
+        #time.sleep(1)
+
+        headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36','Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8','Accept-Encoding':'gzip, deflate, sdch','Accept-Language':'zh-CN,zh;q=0.8','Connection':'keep-alive','Host':'www.hi-pda.com','Upgrade-Insecure-Requests':'1','Referer':'http://www.hi-pda.com/forum/logging.php?action=login'
+        }
+
+        index_url = 'http://www.hi-pda.com/forum/index.php'
+        r = s.get(index_url, headers=headers, timeout=10, proxies={'http':'http://%s' % proxy})
+        r.encoding = r.apparent_encoding
+        with open('testt3.html', 'wb') as f:
+            f.write(r.text.encode('utf-8')) 
+
+        if r.text.find('memcp.php') > -1:
+            s.cookies.save()
+            return s
+    except requests.exceptions.Timeout:
+        print 'timeout .....'
+        return -2
+    except requests.exceptions.ProxyError:
+        print 'ProxyError....'
+        return -3
+    return -1
+
+def saveDate(r):
         tree = html.fromstring(r.text)
         t11 = tree.xpath('//*[@id="moderate"]/table/tbody/@id')
 
@@ -161,6 +162,35 @@ def dosp(s, page):
 
             r = requests.post(up_url, data=payload, timeout=5)
 
+#requests.exceptions.ConnectionError
+#requests.exceptions.Timeout            
+def dosp(s, page, proxy):
+    initpage = int(page)
+    for i in range(initpage, initpage+10000):
+        page = str(i)
+        print "page..............:"+page
+
+        payload = {
+                    'spid':'page2',
+                    'page':page
+                    }
+
+        r = requests.post("http://fvgt.online/spup/page.php", data=payload, timeout=5)
+        
+        headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36','Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8','Accept-Encoding':'gzip, deflate, sdch','Accept-Language':'zh-CN,zh;q=0.8','Connection':'keep-alive','Host':'www.hi-pda.com','Upgrade-Insecure-Requests':'1','Referer':'http://www.hi-pda.com/forum/logging.php?action=login'
+        }
+        
+        d_url = r'http://www.hi-pda.com/forum/forumdisplay.php?fid=2&page=' + page
+        r = s.get(d_url, headers=headers, timeout=60, proxies={'http':'http://%s' % proxy})
+        r.encoding = r.apparent_encoding
+        with open('testt4.html', 'wb') as f:
+            f.write(r.text.encode('utf-8')) #
+            
+        saveDate(r)
+                
+
+
+
 
 def createDaemon(page):
     # fork进程
@@ -200,13 +230,20 @@ if __name__ == '__main__':
         page = '1'
     #getProxy()
     
-    
-    ip = get_ipfile()
-    
-    if (ip != -1):
-        print ip
-    initLogin(ip)
-    
+    #获取session
+    session = -1
+    while session < 0:
+        ip = get_ipfile()
+        if (ip != -1):
+            print ip
+        session = initLogin(ip)
+        print session
+        if session < 0 :
+            continue
+        
+        #do
+        dosp(session, page, ip)
+        
     #s = initLogin()
     #dosp(s, page)
     #createDaemon(page)
