@@ -9,6 +9,7 @@ from lxml import html
 from cookielib import LWPCookieJar
 
 COOKIE_FILE = './cookie_file'
+initpage = 1
 
 def logLine(line):
     timeinfo = time.strftime('%Y-%m-%d %H:%M:%S -> ',time.localtime(time.time()))
@@ -98,7 +99,7 @@ def initLogin(proxy):
         return -3
     return -1
 
-def saveDate(r):
+def saveDate(r, page):
         tree = html.fromstring(r.text)
         t11 = tree.xpath('//*[@id="moderate"]/table/tbody/@id')
 
@@ -163,11 +164,12 @@ def saveDate(r):
             r = requests.post(up_url, data=payload, timeout=5)
 
 #requests.exceptions.ConnectionError
-#requests.exceptions.Timeout            
-def dosp(s, page, proxy):
-    initpage = int(page)
-    for i in range(initpage, initpage+10000):
-        page = str(i)
+#requests.exceptions.Timeout   
+#socket.error         
+def dosp(s, proxy):
+    global initpage
+    while True:
+        page = str(initpage)
         print "page..............:"+page
 
         payload = {
@@ -179,20 +181,28 @@ def dosp(s, page, proxy):
         
         headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36','Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8','Accept-Encoding':'gzip, deflate, sdch','Accept-Language':'zh-CN,zh;q=0.8','Connection':'keep-alive','Host':'www.hi-pda.com','Upgrade-Insecure-Requests':'1','Referer':'http://www.hi-pda.com/forum/logging.php?action=login'
         }
-        
-        d_url = r'http://www.hi-pda.com/forum/forumdisplay.php?fid=2&page=' + page
-        r = s.get(d_url, headers=headers, timeout=60, proxies={'http':'http://%s' % proxy})
-        r.encoding = r.apparent_encoding
-        with open('testt4.html', 'wb') as f:
-            f.write(r.text.encode('utf-8')) #
-            
-        saveDate(r)
+        try:
+            d_url = r'http://www.hi-pda.com/forum/forumdisplay.php?fid=2&page=' + page
+            r = s.get(d_url, headers=headers, timeout=60, proxies={'http':'http://%s' % proxy})
+            r.encoding = r.apparent_encoding
+            with open('testt4.html', 'wb') as f:
+                f.write(r.text.encode('utf-8')) #
+        except requests.exceptions.Timeout:
+            print 'timeout .....'
+            return -2
+        except requests.exceptions.ProxyError:
+            print 'ProxyError....'
+            return -3
+        except requests.exceptions.ConnectionError:
+            print 'ConnectionError....'
+            return -4
+        saveDate(r, page)
+        initpage=initpage+1
                 
 
 
 
-
-def createDaemon(page):
+def createDaemon():
     # fork进程
     try:
         if os.fork() > 0: os._exit(0)
@@ -221,18 +231,21 @@ def createDaemon(page):
     os.dup2(se.fileno(), sys.stderr.fileno())
 
     # 在子进程中执行代码
-    dosp(page) # function demo
+    dosp() # function demo
     
 if __name__ == '__main__': 
     if (len(sys.argv)>1):
         page = sys.argv[1]
     else:
         page = '1'
+        
+    initpage = int(page)
     #getProxy()
     
     #获取session
     session = -1
-    while session < 0:
+
+    while True :
         ip = get_ipfile()
         if (ip != -1):
             print ip
@@ -242,7 +255,11 @@ if __name__ == '__main__':
             continue
         
         #do
-        dosp(session, page, ip)
+        errCode = dosp(session, ip)
+        if errCode < 0:
+            continue
+        
+
         
     #s = initLogin()
     #dosp(s, page)
