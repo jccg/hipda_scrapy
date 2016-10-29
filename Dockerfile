@@ -20,6 +20,8 @@ RUN apt-get update
 RUN apt-get install -y nginx
 RUN apt-get install -y php5-fpm
 
+RUN service nginx start
+
 EXPOSE 22
 
 CMD ["/usr/sbin/sshd", "-D"]
