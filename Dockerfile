@@ -41,4 +41,4 @@ ADD docker/start.sh /home/
 EXPOSE 22
 EXPOSE 80
 
-CMD ["sh /home/start.sh", "-D"]
+CMD ["/bin/bash", "/home/start.sh"]
