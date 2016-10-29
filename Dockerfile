@@ -25,12 +25,20 @@ RUN apt-get install -y php5-fpm
 #配置nginx
 RUN mkdir /var/www
 RUN mkdir /var/www/html
-RUN sed -ri 's:/usr/share/nginx/html:/var/www/html:' /etc/nginx/sites-available/default
+ADD docker/default ./
+RUN mv default /etc/nginx/sites-available/default
 
-#启动服务
-RUN service nginx start
-RUN service php5-fpm start
+#配置php-fpm
+ADD docker/www.conf ./
+RUN mv www.conf /etc/php5/fpm/pool.d/www.conf
+
+#部署php程序
+ADD docker/index.php /var/www/html/
+
+#启动服务脚本
+ADD docker/start.sh ./
 
 EXPOSE 22
+EXPOSE 80
 
-CMD ["/usr/sbin/sshd", "-D"]
+CMD ["sh start.sh", "-D"]
