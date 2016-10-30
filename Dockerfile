@@ -41,4 +41,6 @@ ADD docker/start.sh /root/
 EXPOSE 22
 EXPOSE 80
 
-CMD ["sh", "start.sh"]
+#CMD ["sh", "start.sh"]
+
+ENTRYPOINT service nginx start && service php5-fpm start && /usr/sbin/sshd -D 
