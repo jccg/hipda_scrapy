@@ -36,9 +36,9 @@ RUN mv www.conf /etc/php5/fpm/pool.d/www.conf
 ADD docker/index.php /var/www/html/
 
 #启动服务脚本
-ADD docker/start.sh /home/
+ADD docker/start.sh /root/
 
 EXPOSE 22
 EXPOSE 80
 
-CMD ["sh", "/home/start.sh"]
+CMD ["sh", "start.sh"]
