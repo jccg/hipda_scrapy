@@ -33,7 +33,8 @@ ADD docker/www.conf ./
 RUN mv www.conf /etc/php5/fpm/pool.d/www.conf
 
 #部署php程序
-ADD docker/index.php /var/www/html/
+#ADD docker/index.php /var/www/html/
+ADD ./ /var/www/html/
 
 #启动服务脚本
 ADD docker/start.sh /root/

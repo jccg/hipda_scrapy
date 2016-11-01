@@ -10,19 +10,26 @@ $db_table['user'] = "user";
 //set timezone
 date_default_timezone_set('PRC');
 
+$db_host = getenv('MYSQL_PORT_3306_TCP_ADDR');
+$db_user_name = getenv('MYSQL_USERNAME');
+$db_pass = getenv('MYSQL_PASSWORD');
+$db_name = getenv('MYSQL_INSTANCE_NAME');
+$db_port = getenv('MYSQL_PORT_3306_TCP_PORT');
+
+
 //Using Mysqli
-$dbc = new mysqli(DB_HOST,DB_USER,DB_PWD,DB_DBNAME);
-$db_char = DB_CHARSET;
+$dbc = new mysqli($db_host,$db_user_name,$db_pass,$db_name);
+$db_char = 'utf8';
 $dbc->query("SET NAMES utf8");
 $dbc->query("SET time_zone = '+8:00'");
 
 //$dbinfo
-$dbInfo['database_type'] = DB_TYPE;
-$dbInfo['database_name'] = DB_DBNAME;
-$dbInfo['server'] = DB_HOST;
-$dbInfo['username'] = DB_USER;
-$dbInfo['password'] = DB_PWD;
-$dbInfo['charset'] = DB_CHARSET;
+$dbInfo['database_type'] = 'mysql';
+$dbInfo['database_name'] = $db_name;
+$dbInfo['server'] = $db_host;
+$dbInfo['username'] = $db_user_name;
+$dbInfo['password'] = $db_pass;
+$dbInfo['charset'] = 'utf8';
 
 //Define system Path
 $ss_path = __DIR__;
@@ -38,15 +45,15 @@ function autoload($class){
 require_once 'medoo.php';
 $db = new medoo([
     // required
-    'database_type' => DB_TYPE,
-    'database_name' => DB_DBNAME,
-    'server' => DB_HOST,
-    'username' => DB_USER,
-    'password' => DB_PWD,
-    'charset' => DB_CHARSET,
+    'database_type' => 'mysql',
+    'database_name' => $db_name,
+    'server' => $db_host,
+    'username' => $db_user_name,
+    'password' => $db_pass,
+    'charset' => 'utf8',
 
     // optional
-    'port' => 3306,
+    'port' => $db_port,
     // driver_option for connection, read more from http://www.php.net/manual/en/pdo.setattribute.php
     'option' => [
         PDO::ATTR_CASE => PDO::CASE_NATURAL
