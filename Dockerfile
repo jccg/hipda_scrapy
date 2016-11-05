@@ -18,9 +18,10 @@ RUN mv sources.list /etc/apt/sources.list
 RUN apt-get clean
 RUN apt-get update
 
-#安装nginx和php-fpm
+#安装nginx和php-fpm和php-mysqli
 RUN apt-get install -y nginx
 RUN apt-get install -y php5-fpm
+RUN apt-get install -y php5-mysql
 
 #配置nginx
 RUN mkdir /var/www
