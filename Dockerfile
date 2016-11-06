@@ -18,10 +18,9 @@ RUN mv sources.list /etc/apt/sources.list
 RUN apt-get clean
 RUN apt-get update
 
-#安装nginx和php-fpm和php-mysqli
+#安装nginx和php-fpm
 RUN apt-get install -y nginx
 RUN apt-get install -y php5-fpm
-RUN apt-get install -y php5-mysql
 
 #配置nginx
 RUN mkdir /var/www
@@ -46,3 +45,5 @@ EXPOSE 80
 #CMD ["sh", "start.sh"]
 
 ENTRYPOINT service nginx start && service php5-fpm start && /usr/sbin/sshd -D 
+
+WORKDIR /var/www/html
