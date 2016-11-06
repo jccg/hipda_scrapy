@@ -33,6 +33,10 @@ RUN mv default /etc/nginx/sites-available/default
 ADD docker/www.conf ./
 RUN mv www.conf /etc/php5/fpm/pool.d/www.conf
 
+#配置php.ini
+ADD docker/php.ini ./
+RUN mv php.ini /etc/php5/fpm/php.ini
+
 #部署php程序
 #ADD docker/index.php /var/www/html/
 ADD ./ /var/www/html/
