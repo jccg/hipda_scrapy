@@ -40,8 +40,8 @@ RUN mv php.ini /etc/php5/fpm/php.ini
 #部署php程序
 #ADD docker/index.php /var/www/html/
 ADD ./ /var/www/html/
-RUN sed -ri 's:MYSQL_HOST_IP:'"$MYSQL_HOST_IP"'' /var/www/html/phpMyAdmin/config.inc.php
-RUN sed -ri 's:MYSQL_HOST_PORT:'"$MYSQL_HOST_PORT"'' /var/www/html/phpMyAdmin/config.inc.php
+RUN sed -ri 's:MYSQL_HOST_IP:'"$MYSQL_HOST_IP"':' /var/www/html/phpMyAdmin/config.inc.php
+RUN sed -ri 's:MYSQL_HOST_PORT:'"$MYSQL_HOST_PORT"':' /var/www/html/phpMyAdmin/config.inc.php
 
 
 
