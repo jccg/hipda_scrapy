@@ -28,8 +28,8 @@ $i++;
 /* Authentication type */
 $cfg['Servers'][$i]['auth_type'] = 'cookie';
 /* Server parameters */
-$cfg['Servers'][$i]['host'] = '123.207.163.225';
-$cfg['Servers'][$i]['port'] = '32773';
+$cfg['Servers'][$i]['host'] = 'MYSQL_HOST_IP';
+$cfg['Servers'][$i]['port'] = 'MYSQL_HOST_PORT';
 $cfg['Servers'][$i]['connect_type'] = 'tcp';
 $cfg['Servers'][$i]['compress'] = false;
 $cfg['Servers'][$i]['AllowNoPassword'] = false;
