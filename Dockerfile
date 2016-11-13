@@ -53,6 +53,11 @@ EXPOSE 80
 
 #CMD ["sh", "start.sh"]
 
-ENTRYPOINT service nginx start && service php5-fpm start && /usr/sbin/sshd -D 
+WORKDIR ./
+
+ADD entrypoint.sh ./
+RUN chmod 755 entrypoint.sh
+
+ENTRYPOINT service nginx start && service php5-fpm start && sh entrypoint.sh && /usr/sbin/sshd -D 
 
 WORKDIR /var/www/html
