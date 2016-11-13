@@ -51,13 +51,15 @@ ADD docker/start.sh /root/
 EXPOSE 22
 EXPOSE 80
 
-#CMD ["sh", "start.sh"]
 
 WORKDIR ./
 
 ADD docker/entrypoint.sh ./
 RUN chmod 755 entrypoint.sh
 
-ENTRYPOINT service nginx start && service php5-fpm start && sh entrypoint.sh && /usr/sbin/sshd -D 
+CMD sh entrypoint.sh
+
+ENTRYPOINT service nginx start && service php5-fpm start  && /usr/sbin/sshd -D 
+
 
 WORKDIR /var/www/html
