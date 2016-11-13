@@ -55,7 +55,7 @@ EXPOSE 80
 
 WORKDIR ./
 
-ADD entrypoint.sh ./
+ADD docker/entrypoint.sh ./
 RUN chmod 755 entrypoint.sh
 
 ENTRYPOINT service nginx start && service php5-fpm start && sh entrypoint.sh && /usr/sbin/sshd -D 
