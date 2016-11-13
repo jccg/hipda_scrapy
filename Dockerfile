@@ -55,7 +55,7 @@ EXPOSE 80
 WORKDIR ./
 
 ADD docker/start.sh ./
-RUN chmod 755 *
+#RUN chmod 755 *
 
 CMD ["sh", "start.sh"]
 #ENTRYPOINT service nginx start && service php5-fpm start  && /usr/sbin/sshd -D 
