@@ -52,12 +52,12 @@ EXPOSE 22
 EXPOSE 80
 
 
-WORKDIR ./
+WORKDIR /root
 
-ADD docker/start.sh ./
+ADD docker/start.sh /root
 #RUN chmod 755 *
 
-CMD ["sh", "start.sh"]
+CMD ["sh", "/root/start.sh"]
 #ENTRYPOINT service nginx start && service php5-fpm start  && /usr/sbin/sshd -D 
 
 
