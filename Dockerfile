@@ -1,5 +1,10 @@
 FROM ubuntu:trusty-20161006
 
+#更换阿里云源
+ADD docker/sources.list ./
+RUN mv sources.list /etc/apt/sources.list
+
+RUN apt-get clean
 RUN apt-get update
 
 RUN apt-get install -y openssh-server
@@ -10,13 +15,6 @@ RUN echo 'root:password' |chpasswd
 
 RUN sed -ri 's/^PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config
 RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
-
-#更换阿里云源
-ADD docker/sources.list ./
-RUN mv sources.list /etc/apt/sources.list
-
-RUN apt-get clean
-RUN apt-get update
 
 #安装nginx和php-fpm和php-mysqli
 RUN apt-get install -y nginx
@@ -54,11 +52,11 @@ EXPOSE 80
 
 WORKDIR /root
 
-ADD docker/start.sh /root
+#ADD docker/start.sh /root
 #RUN chmod 755 *
 
-CMD ["sh", "/root/start.sh"]
-#ENTRYPOINT service nginx start && service php5-fpm start  && /usr/sbin/sshd -D 
+#CMD ["sh", "/root/start.sh"]
+ENTRYPOINT service nginx start && service php5-fpm start  && /usr/sbin/sshd -D 
 
 
 WORKDIR /var/www/html
