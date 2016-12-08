@@ -20,6 +20,9 @@ RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
 RUN apt-get install -y nginx
 RUN apt-get install -y php5-fpm
 RUN apt-get install -y php5-mysql
+#安装php的curl支持
+RUN apt-get install -y curl libcurl3 libcurl3-dev php5-curl
+
 
 #配置nginx
 RUN mkdir /var/www
